@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.common.batch.BatchHistoryMapper">
+
+  <select id="selectNextRunSeq" resultType="long">
+    SELECT NEXT VALUE FOR batch_run_seq
+  </select>
+
+  <insert id="insertBatchHistory">
+    INSERT INTO batch_history (run_id, job_name, server_name, started_at, status)
+    VALUES (#{runId}, #{jobName}, #{serverName}, #{startedAt}, #{status})
+  </insert>
+
+  <update id="updateBatchHistoryEnd">
+    UPDATE batch_history
+       SET status = #{status}, target_count = #{targetCount}, message = #{message}, ended_at = #{endedAt}
+     WHERE run_id = #{runId}
+  </update>
+
+  <select id="selectLastStatusOne" resultType="string">
+    SELECT TOP 1 status
+      FROM batch_history WITH (NOLOCK)
+     WHERE job_name = #{jobName} AND status &lt;&gt; 'RUNNING'
+     ORDER BY started_at DESC, run_id DESC
+  </select>
+
+</mapper>

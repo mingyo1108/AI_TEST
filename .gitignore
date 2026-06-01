@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+out/
+bin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code — 개인 설정과 임시 파일은 공유하지 않는다
+.claude/settings.local.json
+.claude/tmp/*
+!.claude/tmp/.gitkeep
+
+# Excel 임시 파일
+~$*.xlsx
+
+# 실습 도구 — 접속 정보·로컬 DB·로그·보고서는 공유하지 않는다
+/.env
+/.local/
+/logs/
+/reports/

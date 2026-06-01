@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.common.code.CommonCodeMapper">
+
+  <!-- CommonCode record의 생성자 순서와 같아야 한다 -->
+  <resultMap id="commonCodeMap" type="com.example.shop.common.code.CommonCode">
+    <constructor>
+      <arg column="group_code" javaType="string"/>
+      <arg column="code" javaType="string"/>
+      <arg column="code_name" javaType="string"/>
+      <arg column="attr1" javaType="string"/>
+      <arg column="attr2" javaType="string"/>
+    </constructor>
+  </resultMap>
+
+  <select id="selectCodeList" resultMap="commonCodeMap">
+    SELECT group_code, code, code_name, attr1, attr2
+      FROM common_code WITH (NOLOCK)
+     WHERE group_code = #{groupCode} AND use_yn = 'Y'
+     ORDER BY sort_order, code
+  </select>
+
+  <select id="selectCodeOne" resultMap="commonCodeMap">
+    SELECT group_code, code, code_name, attr1, attr2
+      FROM common_code WITH (NOLOCK)
+     WHERE group_code = #{groupCode} AND code = #{code} AND use_yn = 'Y'
+  </select>
+
+</mapper>
