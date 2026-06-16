@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.stock.mapper.StockHoldMapper">
+
+  <!-- StockHold record의 생성자 순서와 같아야 한다 -->
+  <resultMap id="stockHoldMap" type="com.example.shop.stock.domain.StockHold">
+    <constructor>
+      <arg column="hold_id" javaType="_long"/>
+      <arg column="lot_no" javaType="string"/>
+      <arg column="reason_code" javaType="com.example.shop.stock.domain.HoldReason"/>
+      <arg column="hold_comment" javaType="string"/>
+      <arg column="held_at" javaType="java.time.LocalDateTime"/>
+      <arg column="held_by" javaType="string"/>
+    </constructor>
+  </resultMap>
+
+  <sql id="holdColumns">
+    hold_id, lot_no, reason_code, hold_comment, held_at, held_by
+  </sql>
+
+  <insert id="insertHold">
+    INSERT INTO stock_hold (lot_no, reason_code, hold_comment, held_at, held_by)
+    VALUES (#{lotNo}, #{reason}, #{comment}, #{heldAt}, #{heldBy})
+  </insert>
+
+  <select id="selectActiveHoldList" resultMap="stockHoldMap">
+    SELECT <include refid="holdColumns"/>
+      FROM stock_hold WITH (NOLOCK)
+     WHERE lot_no = #{lotNo} AND released_at IS NULL
+     ORDER BY held_at, hold_id
+  </select>
+
+  <select id="selectAllActiveHoldList" resultMap="stockHoldMap">
+    SELECT <include refid="holdColumns"/>
+      FROM stock_hold WITH (NOLOCK)
+     WHERE released_at IS NULL
+     ORDER BY lot_no, held_at, hold_id
+  </select>
+
+  <select id="selectActiveHoldCount" resultType="int">
+    SELECT COUNT(*)
+      FROM stock_hold WITH (NOLOCK)
+     WHERE lot_no = #{lotNo} AND reason_code = #{reason} AND released_at IS NULL
+  </select>
+
+  <update id="updateHoldRelease">
+    UPDATE stock_hold
+       SET released_at = #{releasedAt}, released_by = #{releasedBy}, release_comment = #{comment}
+     WHERE lot_no = #{lotNo} AND reason_code = #{reason} AND released_at IS NULL
+  </update>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.product.mapper.ProductMapper">
+
+  <!-- Product record의 생성자 순서와 같아야 한다 -->
+  <resultMap id="productMap" type="com.example.shop.product.domain.Product">
+    <constructor>
+      <arg column="product_code" javaType="string"/>
+      <arg column="product_name" javaType="string"/>
+      <arg column="category" javaType="string"/>
+      <arg column="price" javaType="_int"/>
+    </constructor>
+  </resultMap>
+
+  <select id="selectProductOne" resultMap="productMap">
+    SELECT product_code, product_name, category, price
+      FROM product WITH (NOLOCK)
+     WHERE product_code = #{productCode} AND use_yn = 'Y'
+  </select>
+
+</mapper>
