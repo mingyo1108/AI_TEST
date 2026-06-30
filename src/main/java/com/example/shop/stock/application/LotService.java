@@ -7,7 +7,6 @@ import com.example.shop.stock.domain.LotDetail;
 import com.example.shop.stock.domain.LotStatus;
 import com.example.shop.stock.domain.StockHold;
 import com.example.shop.stock.domain.StockLot;
-import com.example.shop.stock.mapper.StockHoldMapper;
 import com.example.shop.stock.mapper.StockLotMapper;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -25,14 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class LotService {
 
     private final StockLotMapper lotMapper;
-    private final StockHoldMapper holdMapper;
+    private final HoldService holdService;
     private final ProductService productService;
     private final Clock clock;
 
-    public LotService(StockLotMapper lotMapper, StockHoldMapper holdMapper,
-            ProductService productService, Clock clock) {
+    public LotService(StockLotMapper lotMapper, HoldService holdService, ProductService productService,
+            Clock clock) {
         this.lotMapper = lotMapper;
-        this.holdMapper = holdMapper;
+        this.holdService = holdService;
         this.productService = productService;
         this.clock = clock;
     }
@@ -67,7 +66,7 @@ public class LotService {
     /** 재고가 남은 로트(판매 가능·판매 보류)와 각 로트의 활성 보류를 조회한다. 제휴몰 재고 연동이 쓴다. */
     @Transactional(readOnly = true)
     public List<LotDetail> findInStock() {
-        Map<String, List<StockHold>> holdsByLot = holdMapper.selectAllActiveHoldList().stream()
+        Map<String, List<StockHold>> holdsByLot = holdService.findAllActive().stream()
                 .collect(Collectors.groupingBy(StockHold::lotNo));
         return lotMapper.selectInStockList().stream()
                 .map(lot -> new LotDetail(lot, holdsByLot.getOrDefault(lot.lotNo(), List.of())))
