@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shop.partner.mapper.PartnerStockIfMapper">
+
+  <insert id="insertPartnerStockIfList">
+    INSERT INTO partner_stock_if (product_code, lot_no, qty, stock_status, sent_at)
+    VALUES
+    <foreach collection="messages" item="m" separator=",">
+      (#{m.productCode}, #{m.lotNo}, #{m.qty}, #{m.stockStatus}, #{sentAt})
+    </foreach>
+  </insert>
+
+</mapper>
